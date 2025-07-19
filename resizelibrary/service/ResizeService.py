@@ -189,6 +189,10 @@ class ResizeService:
             '-b:a', audio_bitrate,
         ]
 
+        # Add stereo audio channels for AAC encoding
+        if audio_encoding.lower() == 'aac':
+            command += ['-ac', '2']
+
         # Map all audio tracks
         for audio_track in audio_tracks:
             command += [
