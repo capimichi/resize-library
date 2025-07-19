@@ -45,7 +45,7 @@ class DefaultContainer:
     def _init_environment_variables(self):
         self.apprise_streams = json.loads(os.environ.get('RESIZE_LIBRARY_APPRISE_STREAMS', '[]'))
         self.enable_logs = os.environ.get('RESIZE_LIBRARY_LOGS_ENABLE', 'false').lower() == 'true'
-        self.log_dir = os.environ.get('RESIZE_LIBRARY_LOGS_DIR', os.path.join(self.var_dir, 'log'))
+        self.log_dir = os.environ.get('RESIZE_LIBRARY_LOGS_DIR', '')
 
     def _init_logging(self):
         if self.enable_logs:
