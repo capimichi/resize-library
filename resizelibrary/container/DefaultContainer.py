@@ -36,18 +36,30 @@ class DefaultContainer:
 
     def _init_directories(self):
         self.root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.var_dir = os.path.join(self.root_dir, 'var')
-        os.makedirs(self.var_dir, exist_ok=True)
-        self.log_dir = os.path.join(self.var_dir, 'log')
-        os.makedirs(self.log_dir, exist_ok=True)
-        self.app_log_path = os.path.join(self.log_dir, 'app.log')
+        # self.var_dir = os.path.join(self.root_dir, 'var')
+        # os.makedirs(self.var_dir, exist_ok=True)
+        # self.log_dir = os.path.join(self.var_dir, 'log')
+        # os.makedirs(self.log_dir, exist_ok=True)
+        # self.app_log_path = os.path.join(self.log_dir, 'app.log')
 
     def _init_environment_variables(self):
-        self.pandoc_executable = os.environ.get('PANDOC_EXECUTABLE', 'pandoc')
-        self.apprise_streams = json.loads(os.environ.get('APPRISE_STREAMS', '[]'))
+        self.apprise_streams = json.loads(os.environ.get('RESIZE_LIBRARY_APPRISE_STREAMS', '[]'))
+        self.enable_logs = os.environ.get('RESIZE_LIBRARY_LOGS_ENABLE', 'false').lower() == 'true'
+        self.log_dir = os.environ.get('RESIZE_LIBRARY_LOGS_DIR', os.path.join(self.var_dir, 'log'))
 
     def _init_logging(self):
-        logging.basicConfig(filename=self.app_log_path, level=logging.INFO, filemode='a', format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
+        if self.enable_logs:
+            os.makedirs(self.log_dir, exist_ok=True)
+            self.app_log_path = os.path.join(self.log_dir, 'app.log')
+            logging.basicConfig(
+                filename=self.app_log_path,
+                level=logging.INFO,
+                filemode='a',
+                format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                datefmt='%H:%M:%S'
+            )
+        else:
+            logging.basicConfig(level=logging.CRITICAL)  # Disable most logging if logs are not enabled
 
     def _init_bindings(self):
         # self.injector.binder.bind(PostDirVariable, PostDirVariable(self.post_dir))
