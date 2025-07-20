@@ -83,6 +83,7 @@ class ResizeService:
         text_tracks = []
 
         for track in tracks:
+            track_type = track.track_type
             if track.track_type == 'Video':
                 video_track = track
 
@@ -196,14 +197,14 @@ class ResizeService:
         # Map all audio tracks
         for audio_track in audio_tracks:
             command += [
-                '-map', f'0:{audio_track.track_id - 1}',  # Map each audio track (track_id is 1-based, map is 0-based)
+                '-map', f'0:{audio_track.stream_identifier}',  # Map each audio track (track_id is 1-based, map is 0-based)
             ]
 
         # Add text tracks if any
         for text_track in text_tracks:
             command += [
                 '-c:s', 'copy',  # Copy subtitle track without re-encoding
-                '-map', f'0:{text_track.track_id - 1}',  # Map the text track (track_id is 1-based, map is 0-based)
+                '-map', f'0:{text_track.stream_identifier}',  # Map the text track (track_id is 1-based, map is 0-based)
             ]
         
         command += [
